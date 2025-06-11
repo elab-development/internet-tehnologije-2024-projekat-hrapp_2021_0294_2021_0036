@@ -18,6 +18,7 @@ class LeaveRequestResource extends JsonResource
                 'id'         => $this->employee->id,
                 'name'       => $this->employee->name,
                 'department' => $this->employee->department->name,
+                'image_url' => $this->employee->image_url,
             ],
 
             'hr_worker'    => $this->hr_worker_id
@@ -25,6 +26,7 @@ class LeaveRequestResource extends JsonResource
                     'id'         => $this->hrWorker->id,
                     'name'       => $this->hrWorker->name,
                     'department' => $this->hrWorker->department->name,
+                    'image_url' => $this->hrWorker->image_url,
                 ]
                 : null,
 
