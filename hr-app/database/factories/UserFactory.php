@@ -14,15 +14,18 @@ class UserFactory extends Factory
 
     public function definition()
     {
-        // assume you’ve seeded some roles & departments
+        // pick a unique seed so each user gets a different image
+        $seed = $this->faker->uuid;
+
         return [
             'name'              => $this->faker->name(),
             'email'             => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password'          => bcrypt('password'), // or Hash::make(...)
+            'password'          => bcrypt('password'),
             'remember_token'    => Str::random(10),
             'role_id'           => Role::inRandomOrder()->first()->id,
             'department_id'     => Department::inRandomOrder()->first()->id,
+            'image_url'         => "https://picsum.photos/seed/{$seed}/200/200",
         ];
     }
 }

@@ -24,6 +24,7 @@ return new class extends Migration
                   ->after('role_id')
                   ->constrained('departments')
                   ->onDelete('set null');
+            $table->string('image_url')->nullable()->after('department_id');
         });
     }
 
@@ -33,6 +34,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('image_url');
+
             $table->dropForeign(['department_id']);
             $table->dropColumn('department_id');
 

@@ -21,6 +21,7 @@ class AuthController extends Controller
             'password'      => 'required|string|min:6',
             'role_id'       => 'required|exists:roles,id',
             'department_id' => 'required|exists:departments,id',
+            'image_url'     => 'nullable|url',
         ]);
 
         // Kreiranje korisnika
@@ -30,6 +31,7 @@ class AuthController extends Controller
             'password'      => Hash::make($request->password),
             'role_id'       => $request->role_id,
             'department_id' => $request->department_id,
+            'image_url'     => $request->image_url,
         ]);
 
         // Generisanje API tokena
@@ -74,6 +76,7 @@ class AuthController extends Controller
                 'email'         => $user->email,
                 'role_id'       => $user->role_id,
                 'department_id' => $user->department_id,
+                'image_url'     => $request->image_url,
             ],
             'token' => $token,
         ]);
