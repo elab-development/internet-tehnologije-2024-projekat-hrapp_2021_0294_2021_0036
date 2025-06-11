@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LeaveRequestController;
+use App\Http\Controllers\PerformanceReviewController;
+use App\Http\Controllers\AdminController;
 
 Route::post('/register',[AuthController::class,'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -18,4 +20,20 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/leave-requests/{id}',                [LeaveRequestController::class, 'update']);
     Route::patch('/leave-requests/{id}/status',       [LeaveRequestController::class, 'updateStatus']);
     Route::delete('/leave-requests/{id}',             [LeaveRequestController::class, 'destroy']);
+
+    // Performance Reviews
+    // Standard CRUD (index, show, store, update, destroy)
+    Route::apiResource('performance-reviews', PerformanceReviewController::class)
+         ->parameters(['performance-reviews' => 'id']);
+
+    // Custom PDF export
+    Route::get(
+        'performance-reviews/{id}/export-pdf',
+        [PerformanceReviewController::class, 'exportToPDF']
+    );
+
+        // Admin only
+    Route::get('/admin/metrics',       [AdminController::class, 'getMetrics']);
+    Route::get('/admin/users',         [AdminController::class, 'getUsers']);
+    Route::delete('/admin/users/{id}', [AdminController::class, 'removeUser']);
 });
