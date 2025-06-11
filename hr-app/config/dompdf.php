@@ -57,6 +57,14 @@ return [
          */
         'font_cache' => storage_path('fonts'),
 
+          'font_data' => [
+    // register your Meow Script
+    'meow_script' => [
+      'R'  => 'MeowScript-Regular.ttf',
+    ],
+    // you can leave the others...
+  ],
+
         /**
          * The location of a temporary directory.
          *

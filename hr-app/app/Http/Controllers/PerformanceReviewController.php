@@ -131,7 +131,10 @@ class PerformanceReviewController extends Controller
             (in_array($user->role->name, ['hr_worker', 'administrator']) &&
              $review->reviewer_id === $user->id)
         ) {
-            $pdf = Pdf::loadView('pdf.performance_review', [
+            $pdf = Pdf::setOptions([
+                'isRemoteEnabled'    => true,  // 🔑 allow http(s) images
+                'isHtml5ParserEnabled'=> true, // better CSS support
+            ])->loadView('pdf.performance_review', [
                 'review' => $review,
             ]);
 

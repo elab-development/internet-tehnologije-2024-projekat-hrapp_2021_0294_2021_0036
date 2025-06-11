@@ -30,8 +30,8 @@ class LeaveRequestResource extends JsonResource
                 ]
                 : null,
 
-            'start_date'   => $this->start_date->toDateString(),
-            'end_date'     => $this->end_date->toDateString(),
+            'start_date'   => $this->start_date,
+            'end_date'     => $this->end_date,
             'status'       => $this->status,
             'created_at'   => $this->created_at->toDateTimeString(),
             'updated_at'   => $this->updated_at->toDateTimeString(),

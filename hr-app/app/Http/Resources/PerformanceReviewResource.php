@@ -15,15 +15,17 @@ class PerformanceReviewResource extends JsonResource
             'id' => $this->id,
 
             'employee' => [
-                'id'   => $this->employee->id,
-                'name' => $this->employee->name,
-                'image_url' => $this->employee->image_url,
+                'id'         => $this->employee->id,
+                'name'       => $this->employee->name,
+                'department' => $this->employee->department->name,
+                'image_url'  => $this->employee->image_url,
             ],
 
             'reviewer' => [
-                'id'   => $this->reviewer->id,
-                'name' => $this->reviewer->name,
-                'image_url' => $this->reviewer->image_url,
+                'id'         => $this->reviewer->id,
+                'name'       => $this->reviewer->name,
+                'department' => $this->reviewer->department->name,
+                'image_url'  => $this->reviewer->image_url,
             ],
 
             'score'      => $this->score,

@@ -44,8 +44,12 @@ class UserSeeder extends Seeder
 
         // 1 administrator in IT
         User::factory()->create([
+            'name'           => 'admin',
+            'email'          => 'admin@admin.com',
+            'password'       => bcrypt('admin'),
             'role_id'       => $adminRole->id,
             'department_id' => $itDepartment->id,
+            "image_url"=> "https://t4.ftcdn.net/jpg/04/22/23/99/360_F_422239917_nRLYm6guQu9g6JMhJseXUhGSMgtBJ44x.jpg"
         ]);
     }
 }
