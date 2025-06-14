@@ -158,7 +158,7 @@ export default function Register() {
         bg="white" boxShadow="2xl" borderRadius="xl">
 
         <Flex justify="center">
-          <Image src="/images/hr-logo-Photoroom.png" alt="HR Logo" boxSize="80px" />
+          <Image src="/images/hr-logo.png" alt="HR Logo" boxSize="80px" />
         </Flex>
         <Heading textAlign="center" color="pink.500">Kreiraj nalog</Heading>
 

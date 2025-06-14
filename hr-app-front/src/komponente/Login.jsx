@@ -1,19 +1,9 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import {
-  Flex,
-  Heading,
-  FormControl,
-  FormLabel,
-  Input,
-  InputGroup,
-  InputRightElement,
-  Button,
-  Stack,
-  Text,
-  Link,
-  useToast,
-  IconButton,
-  Image,
+  Flex, Heading, FormControl, FormLabel,
+  Input, InputGroup, InputRightElement,
+  Button, Stack, Text, Link, useToast,
+  IconButton, Image
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
@@ -23,18 +13,25 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
-  const toast = useToast();
-  const nav = useNavigate();
 
-  const handleChange = (e) =>
+  const toast = useToast();
+  const nav   = useNavigate();
+
+  const handleChange = e =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async () => {
     setLoading(true);
     try {
       const res = await api.post('/login', form);
-      // save token to localStorage or context
-      localStorage.setItem('token', res.data.token);
+
+      // 1) Save token + user object in sessionStorage
+      sessionStorage.setItem('token', res.data.token);
+      sessionStorage.setItem('user', JSON.stringify(res.data.user));
+
+      console.log(res.data.user);
+
+      // 2) Apply token to axios for future calls
       api.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
 
       toast({
@@ -44,7 +41,9 @@ export default function Login() {
         duration: 3000,
         isClosable: true,
       });
-      nav('/');
+
+      // 3) Redirect to your protected home/dashboard
+      nav('/home');
     } catch (err) {
       toast({
         title: 'Greška pri prijavi',
@@ -59,16 +58,41 @@ export default function Login() {
   };
 
   return (
-    <Flex minH="100vh" align="center" justify="center" bgGradient="linear(to-br, white, pink.50)">
-      <Stack spacing={4} w={{ base: '90%', md: '400px' }} p={8} bg="white" boxShadow="lg" borderRadius="lg">
+    <Flex
+      minH="100vh"
+      align="center"
+      justify="center"
+      bgGradient="linear(to-br, white, pink.50)"
+    >
+      <Stack
+        spacing={6}
+        w={{ base: '90%', md: '400px' }}
+        p={8}
+        bg="white"
+        boxShadow="lg"
+        borderRadius="lg"
+      >
         <Flex justify="center">
-          <Image src="/images/hr-logo.png" alt="HR Logo" boxSize="80px" />
+          <Image
+            src="/images/hr-logo.png"
+            alt="HR Logo"
+            boxSize="80px"
+          />
         </Flex>
-        <Heading textAlign="center" color="pink.500">Prijava</Heading>
+        <Heading textAlign="center" color="pink.500">
+          Prijava
+        </Heading>
 
         <FormControl id="email" isRequired>
           <FormLabel>Email adresa</FormLabel>
-          <Input type="email" name="email" placeholder="email@primer.com" value={form.email} onChange={handleChange} focusBorderColor="pink.400"/>
+          <Input
+            type="email"
+            name="email"
+            placeholder="email@primer.com"
+            value={form.email}
+            onChange={handleChange}
+            focusBorderColor="pink.400"
+          />
         </FormControl>
 
         <FormControl id="password" isRequired>
@@ -105,7 +129,9 @@ export default function Login() {
 
         <Text textAlign="center">
           Nemate nalog?{' '}
-          <Link as={RouterLink} to="/register" color="pink.500">Registrujte se</Link>
+          <Link as={RouterLink} to="/register" color="pink.500">
+            Registrujte se
+          </Link>
         </Text>
       </Stack>
     </Flex>

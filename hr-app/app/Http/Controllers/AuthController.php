@@ -76,7 +76,7 @@ class AuthController extends Controller
                 'email'         => $user->email,
                 'role_id'       => $user->role_id,
                 'department_id' => $user->department_id,
-                'image_url'     => $request->image_url,
+                'image_url'     => $user->image_url,
             ],
             'token' => $token,
         ]);

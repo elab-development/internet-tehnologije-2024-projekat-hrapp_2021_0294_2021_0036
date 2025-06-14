@@ -16,4 +16,13 @@ class RolesController extends Controller
         $roles = Role::all(['id', 'name']);
         return response()->json($roles);
     }
+
+    /**
+     * GET /api/roles/{id}
+     */
+    public function show($id): JsonResponse
+    {
+        $role = Role::findOrFail($id, ['id','name']);
+        return response()->json($role);
+    }
 }

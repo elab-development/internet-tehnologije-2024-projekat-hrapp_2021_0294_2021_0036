@@ -16,4 +16,13 @@ class DepartmentsController extends Controller
         $departments = Department::all(['id', 'name']);
         return response()->json($departments);
     }
+
+    /**
+     * GET /api/departments/{id}
+     */
+    public function show($id): JsonResponse
+    {
+        $dept = Department::findOrFail($id, ['id','name']);
+        return response()->json($dept);
+    }
 }

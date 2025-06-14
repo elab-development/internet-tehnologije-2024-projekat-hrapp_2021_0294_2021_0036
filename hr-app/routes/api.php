@@ -10,6 +10,9 @@ use App\Http\Controllers\DepartmentsController;
 Route::get('/roles',       [RolesController::class,       'index']);
 Route::get('/departments', [DepartmentsController::class, 'index']);
 
+Route::get('/roles/{id}',  [RolesController::class,       'show']);
+Route::get('/departments/{id}', [DepartmentsController::class, 'show']);
+
 Route::post('/register',[AuthController::class,'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
