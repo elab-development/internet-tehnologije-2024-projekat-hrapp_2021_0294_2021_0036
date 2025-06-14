@@ -4,6 +4,11 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\PerformanceReviewController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\RolesController;
+use App\Http\Controllers\DepartmentsController;
+
+Route::get('/roles',       [RolesController::class,       'index']);
+Route::get('/departments', [DepartmentsController::class, 'index']);
 
 Route::post('/register',[AuthController::class,'register']);
 Route::post('/login', [AuthController::class, 'login']);
