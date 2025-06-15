@@ -30,7 +30,28 @@ function App() {
         }
       >
         <Route path="/home"                   element={<Home />} />
-        <Route path="/leave-requests"         element={<div></div>} />
+      <Route
+        path="/leave-requests"
+        element={
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '100vh',
+              textAlign: 'center'
+            }}
+          >
+            <h1>ZA PROJEKAT POSLE!</h1>
+            <img
+              src="https://images.pexels.com/photos/211122/pexels-photo-211122.jpeg?auto=compress&cs=tinysrgb&w=600"
+              alt="Placeholder"
+              style={{ maxWidth: '80%', height: 'auto', marginTop: '1rem' }}
+            />
+          </div>
+        }
+      />
          <Route
           path="/performance-reviews"
           element={<PerformanceReviewsEmployee />}
