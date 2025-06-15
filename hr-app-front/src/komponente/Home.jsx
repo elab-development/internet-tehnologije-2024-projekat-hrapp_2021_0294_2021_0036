@@ -17,7 +17,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import api from '../util/api';
 
 export default function Home() {
-  // --- 1) Load logged-in user from sessionStorage ---
+  // 1) Auth user
   const stored = JSON.parse(sessionStorage.getItem('user') || '{}');
   const [roleName, setRoleName]       = useState('');
   const [departmentName, setDeptName] = useState('');
@@ -35,7 +35,7 @@ export default function Home() {
     }
   }, [stored.role_id, stored.department_id]);
 
-  // --- 2) Progress animations ---
+  // 2) Progress animation
   const [circleVal, setCircleVal] = useState(0);
   const [barVals, setBarVals]     = useState([0,0,0,0,0]);
   useEffect(() => {
@@ -52,10 +52,10 @@ export default function Home() {
     { label:'Project 5', target:50, color:'purple.400' },
   ],[]);
 
-  // --- 3) Quote of the Day via Real-Inspire API ---
-  const [quote, setQuote]     = useState('');
-  const [author, setAuthor]   = useState('');
-  const [qLoading, setQLoad]  = useState(true);
+  // 3) Quote
+  const [quote, setQuote]    = useState('');
+  const [author, setAuthor]  = useState('');
+  const [qLoading, setQLoad] = useState(true);
   useEffect(() => {
     fetch('https://api.realinspire.live/v1/quotes/random?limit=1')
       .then(r => r.json())
@@ -69,7 +69,7 @@ export default function Home() {
       .finally(() => setQLoad(false));
   }, []);
 
-  // --- 4) Fake birthdays: fetch 36 random users ---
+  // 4) Birthdays
   const today = new Date();
   const dateStr = `${String(today.getDate()).padStart(2,'0')}.${String(today.getMonth()+1).padStart(2,'0')}.${today.getFullYear()}`;
 
@@ -79,32 +79,31 @@ export default function Home() {
     fetch('https://randomuser.me/api/?results=36&nat=us&inc=name,picture,login')
       .then(r => r.json())
       .then(data => {
-        const arr = data.results.map((u,i) => ({
+        setBirthdays(data.results.map((u,i) => ({
           id: i,
           name: `${u.name.first} ${u.name.last}`,
           department: depts[Math.floor(Math.random()*depts.length)],
           image_url: u.picture.medium,
           date: dateStr
-        }));
-        setBirthdays(arr);
+        })));
       })
       .catch(console.error);
   }, [dateStr]);
 
-  // --- 5) Carousel state: 6 per page ---
+  // 5) Carousel
   const pageSize = 6;
   const totalPages = Math.ceil(birthdays.length / pageSize);
   const [page, setPage] = useState(0);
   const current = birthdays.slice(page*pageSize, page*pageSize + pageSize);
 
-  const bg    = useColorModeValue('gray.50','gray.800');
+  const bg     = useColorModeValue('gray.50','gray.800');
   const cardBg = useColorModeValue('white','gray.700');
 
   return (
     <Box bg={bg} minH="100vh" p={{ base:4, md:8 }}>
       <Stack spacing={8}>
 
-        {/* TOP PANELS */}
+        {/* Top Panels */}
         <Flex direction={{ base:'column', md:'row' }} gap={8}>
           {/* Personal Overview */}
           <Box flex="1" bg={cardBg} shadow="lg" rounded="xl" p={6}>
@@ -123,7 +122,7 @@ export default function Home() {
               </CircularProgress>
             </Flex>
             <Stack spacing={4}>
-              {projects.map((p,i) => (
+              {projects.map((p,i)=>(
                 <Flex key={p.label} align="center">
                   <Text w="25%" fontSize="sm">{p.label}</Text>
                   <Box w="60%" mx={2}>
@@ -135,9 +134,7 @@ export default function Home() {
                       transition="width 1s ease-out"
                     />
                   </Box>
-                  <Text w="15%" textAlign="right" fontSize="sm">
-                    {barVals[i]}%
-                  </Text>
+                  <Text w="15%" textAlign="right" fontSize="sm">{barVals[i]}%</Text>
                 </Flex>
               ))}
             </Stack>
@@ -149,62 +146,43 @@ export default function Home() {
             <Flex mb={6} align="center" gap={6}>
               <Box boxSize="100px" rounded="md" overflow="hidden">
                 {stored.image_url
-                  ? <Image
-                      src={stored.image_url}
-                      alt={stored.name}
-                      w="100%"
-                      h="100%"
-                      objectFit="cover"
-                    />
-                  : <Text>No Image</Text>
-                }
+                  ? <Image src={stored.image_url} alt={stored.name} w="100%" h="100%" objectFit="cover"/>
+                  : <Text>No Image</Text>}
               </Box>
               <Stack spacing={1}>
-                <Text>
-                  <Text as="span" fontWeight="bold">Name: </Text>{stored.name}
-                </Text>
-                <Text>
-                  <Text as="span" fontWeight="bold">Email: </Text>{stored.email}
-                </Text>
-                <Text>
-                  <Text as="span" fontWeight="bold">Department: </Text>{departmentName}
-                </Text>
-                <Text>
-                  <Text as="span" fontWeight="bold">Role: </Text>{roleName}
-                </Text>
+                <Text><Text as="span" fontWeight="bold">Name: </Text>{stored.name}</Text>
+                <Text><Text as="span" fontWeight="bold">Email: </Text>{stored.email}</Text>
+                <Text><Text as="span" fontWeight="bold">Department: </Text>{departmentName}</Text>
+                <Text><Text as="span" fontWeight="bold">Role: </Text>{roleName}</Text>
               </Stack>
             </Flex>
             <Box bg="pink.50" p={4} rounded="lg" textAlign="center" minH="80px">
               {qLoading
                 ? <Spinner />
                 : <>
-                    <Text fontStyle="italic" color="gray.600">
-                      “{quote}”
-                    </Text>
-                    <Text mt={2} fontWeight="bold" fontSize="sm">
-                      — {author}
-                    </Text>
+                    <Text fontStyle="italic" color="gray.600">“{quote}”</Text>
+                    <Text mt={2} fontWeight="bold" fontSize="sm">— {author}</Text>
                   </>
               }
             </Box>
           </Box>
         </Flex>
 
-        {/* BIRTHDAYS CAROUSEL */}
+        {/* Birthdays Carousel */}
         <Box bg={cardBg} shadow="lg" rounded="xl" p={6}>
           <Heading size="md" mb={4}>Today’s Birthdays</Heading>
           <Flex align="center">
             <IconButton
               icon={<ChevronLeftIcon />}
               aria-label="Previous"
-              onClick={() => setPage(p => Math.max(0, p - 1))}
-              isDisabled={page === 0}
+              onClick={()=>setPage(p=>Math.max(0, p-1))}
+              isDisabled={page===0}
               mr={2}
             />
             <Flex flex="1" wrap="wrap" justify="space-around" rowGap={6}>
-              {current.length === 0
+              {current.length===0
                 ? <Spinner />
-                : current.map(b => (
+                : current.map(b=>(
                     <Box
                       key={b.id}
                       textAlign="center"
@@ -212,7 +190,7 @@ export default function Home() {
                       p={4}
                       rounded="xl"
                       shadow="md"
-                      w="120px"
+                      w={{ base: '140px', md: '160px' }}
                     >
                       <Image
                         src={b.image_url}
@@ -223,15 +201,9 @@ export default function Home() {
                         rounded="md"
                         mb={2}
                       />
-                      <Text fontWeight="semibold" noOfLines={1}>
-                        {b.name}
-                      </Text>
-                      <Text fontSize="xs" color="gray.500">
-                        {b.department}
-                      </Text>
-                      <Text fontSize="xs" color="gray.400">
-                        {b.date}
-                      </Text>
+                      <Text fontWeight="semibold">{b.name}</Text>
+                      <Text fontSize="xs" color="gray.500">{b.department}</Text>
+                      <Text fontSize="xs" color="gray.400">{b.date}</Text>
                     </Box>
                   ))
               }
@@ -239,8 +211,8 @@ export default function Home() {
             <IconButton
               icon={<ChevronRightIcon />}
               aria-label="Next"
-              onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
-              isDisabled={page === totalPages - 1}
+              onClick={()=>setPage(p=>Math.min(totalPages-1, p+1))}
+              isDisabled={page===totalPages-1}
               ml={2}
             />
           </Flex>
