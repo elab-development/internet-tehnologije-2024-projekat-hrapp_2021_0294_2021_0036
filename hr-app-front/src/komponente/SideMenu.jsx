@@ -5,13 +5,15 @@ import {
   HStack,
   Icon,
   Button,
-  useColorModeValue,
+  Tooltip,
   Divider,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import {
   FiHome,
   FiCalendar,
   FiBarChart2,
+  FiUsers,
   FiLogOut,
 } from 'react-icons/fi';
 import { NavLink, useNavigate } from 'react-router-dom';
@@ -38,16 +40,24 @@ export default function SideMenu() {
     }
   }, []);
 
-  // decide path based on role
-  const reviewsPath = roleName === 'hr_worker'
-    ? '/performance-reviews-hr'
-    : '/performance-reviews';
+  // build link list based on role
+  let links = [];
+  if (roleName === 'administrator') {
+    links = [
+      { label: 'Dashboard', icon: FiHome,    to: '/admin-dashboard' },
+      { label: 'Users',     icon: FiUsers,   to: '/view-users'     },
+    ];
+  } else {
+    const reviewsPath = roleName === 'hr_worker'
+      ? '/performance-reviews-hr'
+      : '/performance-reviews';
 
-  const links = [
-    { label: 'Home',               icon: FiHome,       to: '/home' },
-    { label: 'Leave Requests',     icon: FiCalendar,   to: '/leave-requests' },
-    { label: 'Performance Reviews',icon: FiBarChart2,  to: reviewsPath },
-  ];
+    links = [
+      { label: 'Home',               icon: FiHome,      to: '/home'               },
+      { label: 'Leave Requests',     icon: FiCalendar,  to: '/leave-requests'     },
+      { label: 'Performance Reviews',icon: FiBarChart2, to: reviewsPath          },
+    ];
+  }
 
   const handleLogout = async () => {
     const token = sessionStorage.getItem('token');
@@ -58,8 +68,7 @@ export default function SideMenu() {
     } catch (err) {
       console.error('Logout failed', err);
     } finally {
-      sessionStorage.removeItem('token');
-      sessionStorage.removeItem('user');
+      sessionStorage.clear();
       delete api.defaults.headers.common['Authorization'];
       navigate('/');
     }
@@ -68,7 +77,7 @@ export default function SideMenu() {
   return (
     <Box
       as="nav"
-      position="fixed"
+      pos="fixed"
       top="0"
       left="0"
       h="100vh"
@@ -76,16 +85,16 @@ export default function SideMenu() {
       bg={bg}
       boxShadow="md"
       display="flex"
-      flexDirection="column"
-      justifyContent="space-between"
-      alignItems="center"
+      flexDir="column"
+      justify="space-between"
+      align="center"
       py={4}
     >
       <VStack spacing={6} flex="1">
-        {links.map(link => (
+        {links.map(({ label, icon, to }) => (
           <NavLink
-            key={link.to}
-            to={link.to}
+            key={to}
+            to={to}
             style={({ isActive }) => ({
               width: '100%',
               textAlign: 'center',
@@ -94,15 +103,17 @@ export default function SideMenu() {
             })}
           >
             {({ isActive }) => (
-              <HStack
-                justify="center"
-                p={3}
-                color={isActive ? 'pink.600' : 'gray.500'}
-                _hover={{ bg: hoverBg, color: 'pink.500' }}
-                borderRadius="md"
-              >
-                <Icon as={link.icon} boxSize={6} />
-              </HStack>
+              <Tooltip label={label} placement="right" openDelay={300}>
+                <HStack
+                  justify="center"
+                  p={3}
+                  color={isActive ? 'pink.600' : 'gray.500'}
+                  _hover={{ bg: hoverBg, color: 'pink.500' }}
+                  borderRadius="md"
+                >
+                  <Icon as={icon} boxSize={6} />
+                </HStack>
+              </Tooltip>
             )}
           </NavLink>
         ))}
@@ -110,17 +121,19 @@ export default function SideMenu() {
 
       <Box>
         <Divider mb={4} />
-        <Button
-          onClick={handleLogout}
-          variant="ghost"
-          colorScheme="pink"
-          size="lg"
-          p={0}
-          mb={2}
-          _hover={{ bg: hoverBg }}
-        >
-          <Icon as={FiLogOut} boxSize={6} />
-        </Button>
+        <Tooltip label="Logout" placement="right" openDelay={300}>
+          <Button
+            onClick={handleLogout}
+            variant="ghost"
+            colorScheme="pink"
+            size="lg"
+            p={0}
+            mb={2}
+            _hover={{ bg: hoverBg }}
+          >
+            <Icon as={FiLogOut} boxSize={6} />
+          </Button>
+        </Tooltip>
       </Box>
     </Box>
   );
