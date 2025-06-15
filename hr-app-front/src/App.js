@@ -7,7 +7,11 @@ import Home               from './komponente/Home';
 import ProtectedRoute     from './komponente/ProtectedRoute';
 import ProtectedLayout    from './komponente/ProtectedLayout';
 
+import PerformanceReviewsEmployee    from './komponente/employee/PerformanceReviewsEmployee';
+import PerformanceReviewsHrWorker    from './komponente/hr_worker/PerformanceReviewsHrWorker';
+
 function App() {
+
   return (
     <Routes>
       {/* Public routes */}
@@ -24,7 +28,14 @@ function App() {
       >
         <Route path="/home"                   element={<Home />} />
         <Route path="/leave-requests"         element={<div></div>} />
-        <Route path="/performance-reviews"    element={<div></div>} />
+         <Route
+          path="/performance-reviews"
+          element={<PerformanceReviewsEmployee />}
+        />
+        <Route
+          path="/performance-reviews-hr"
+          element={<PerformanceReviewsHrWorker />}
+        />
         {/* Redirect any unmatched protected path back to /home */}
         <Route path="*"                        element={<Navigate to="/home" replace />} />
       </Route>

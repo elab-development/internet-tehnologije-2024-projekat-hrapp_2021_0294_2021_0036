@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import {
   Box,
   VStack,
@@ -18,27 +19,50 @@ import api from '../util/api';
 
 export default function SideMenu() {
   const navigate = useNavigate();
-  const bg = useColorModeValue('white', 'gray.800');
+  const bg       = useColorModeValue('white', 'gray.800');
   const activeBg = useColorModeValue('pink.100', 'pink.900');
-  const hoverBg = useColorModeValue('pink.50', 'pink.800');
+  const hoverBg  = useColorModeValue('pink.50',  'pink.800');
+
+  const [roleName, setRoleName] = useState('');
+
+  // fetch role name once
+  useEffect(() => {
+    const stored = JSON.parse(sessionStorage.getItem('user') || '{}');
+    const token  = sessionStorage.getItem('token');
+    if (stored.role_id && token) {
+      api.get(`/roles/${stored.role_id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      .then(res => setRoleName(res.data.name))
+      .catch(() => setRoleName(''));
+    }
+  }, []);
+
+  // decide path based on role
+  const reviewsPath = roleName === 'hr_worker'
+    ? '/performance-reviews-hr'
+    : '/performance-reviews';
 
   const links = [
-    { label: 'Home',       icon: FiHome,       to: '/home' },
-    { label: 'Leave Requests', icon: FiCalendar,  to: '/leave-requests' },
-    { label: 'Performance Reviews', icon: FiBarChart2, to: '/performance-reviews' },
+    { label: 'Home',               icon: FiHome,       to: '/home' },
+    { label: 'Leave Requests',     icon: FiCalendar,   to: '/leave-requests' },
+    { label: 'Performance Reviews',icon: FiBarChart2,  to: reviewsPath },
   ];
 
   const handleLogout = async () => {
+    const token = sessionStorage.getItem('token');
     try {
-      await api.post('/logout');
+      await api.post('/logout', null, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
     } catch (err) {
       console.error('Logout failed', err);
+    } finally {
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('user');
+      delete api.defaults.headers.common['Authorization'];
+      navigate('/');
     }
-    // clear session
-    sessionStorage.removeItem('token');
-    sessionStorage.removeItem('user');
-    delete api.defaults.headers.common['Authorization'];
-    navigate('/login');
   };
 
   return (
@@ -58,7 +82,7 @@ export default function SideMenu() {
       py={4}
     >
       <VStack spacing={6} flex="1">
-        {links.map((link) => (
+        {links.map(link => (
           <NavLink
             key={link.to}
             to={link.to}
@@ -66,12 +90,11 @@ export default function SideMenu() {
               width: '100%',
               textAlign: 'center',
               background: isActive ? activeBg : undefined,
-              borderRadius: '8px',
+              borderRadius: 8,
             })}
           >
             {({ isActive }) => (
               <HStack
-                spacing={0}
                 justify="center"
                 p={3}
                 color={isActive ? 'pink.600' : 'gray.500'}

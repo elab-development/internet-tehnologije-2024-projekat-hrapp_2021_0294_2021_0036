@@ -6,12 +6,15 @@ use App\Http\Controllers\PerformanceReviewController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\DepartmentsController;
+use App\Http\Controllers\UserController;
 
 Route::get('/roles',       [RolesController::class,       'index']);
 Route::get('/departments', [DepartmentsController::class, 'index']);
 
 Route::get('/roles/{id}',  [RolesController::class,       'show']);
 Route::get('/departments/{id}', [DepartmentsController::class, 'show']);
+
+Route::get('/users', [UserController::class, 'index']);
 
 Route::post('/register',[AuthController::class,'register']);
 Route::post('/login', [AuthController::class, 'login']);

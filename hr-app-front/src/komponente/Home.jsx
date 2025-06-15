@@ -23,11 +23,20 @@ export default function Home() {
   const [departmentName, setDeptName] = useState('');
 
   useEffect(() => {
-    if (stored.role_id) {
-      api.get(`/roles/${stored.role_id}`)
-         .then(r => setRoleName(r.data.name))
-         .catch(() => setRoleName(''));
-    }
+
+    const roleLabels = {
+    employee:      'Employee',
+    hr_worker:     'HR Worker',
+    administrator: 'Administrator',
+  };
+  if (stored.role_id) {
+   api.get(`/roles/${stored.role_id}`)
+     .then(({ data }) => {
+       // map 'employee' → 'Employee', etc.
+       setRoleName(roleLabels[data.name] || data.name);
+     })
+      .catch(() => setRoleName(''));
+  }
     if (stored.department_id) {
       api.get(`/departments/${stored.department_id}`)
          .then(r => setDeptName(r.data.name))
