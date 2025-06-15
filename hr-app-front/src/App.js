@@ -10,6 +10,9 @@ import ProtectedLayout    from './komponente/ProtectedLayout';
 import PerformanceReviewsEmployee    from './komponente/employee/PerformanceReviewsEmployee';
 import PerformanceReviewsHrWorker    from './komponente/hr_worker/PerformanceReviewsHrWorker';
 
+import AdminDashboard        from './komponente/administrator/AdminDashboard';
+import ViewUsers from './komponente/administrator/ViewUsers';
+
 function App() {
 
   return (
@@ -35,6 +38,15 @@ function App() {
         <Route
           path="/performance-reviews-hr"
           element={<PerformanceReviewsHrWorker />}
+        />
+
+        <Route
+          path="/admin-dashboard"
+          element={<AdminDashboard />}
+        />
+        <Route
+          path="/view-users"
+          element={<ViewUsers />}
         />
         {/* Redirect any unmatched protected path back to /home */}
         <Route path="*"                        element={<Navigate to="/home" replace />} />
