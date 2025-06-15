@@ -1,9 +1,19 @@
 import { useState } from 'react';
 import {
-  Flex, Heading, FormControl, FormLabel,
-  Input, InputGroup, InputRightElement,
-  Button, Stack, Text, Link, useToast,
-  IconButton, Image
+  Flex,
+  Heading,
+  FormControl,
+  FormLabel,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Button,
+  Stack,
+  Text,
+  Link,
+  useToast,
+  IconButton,
+  Image,
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
@@ -11,28 +21,26 @@ import api from '../util/api';
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
-  const [form, setForm] = useState({ email: '', password: '' });
-  const [loading, setLoading] = useState(false);
+  const [form, setForm]                 = useState({ email: '', password: '' });
+  const [loading, setLoading]           = useState(false);
 
-  const toast = useToast();
-  const nav   = useNavigate();
+  const toast  = useToast();
+  const navigate = useNavigate();
 
   const handleChange = e =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm(f => ({ ...f, [e.target.name]: e.target.value }));
 
   const handleSubmit = async () => {
     setLoading(true);
     try {
+      // 1) Perform login
       const res = await api.post('/login', form);
 
-      // 1) Save token + user object in sessionStorage
-      sessionStorage.setItem('token', res.data.token);
-      sessionStorage.setItem('user', JSON.stringify(res.data.user));
-
-      console.log(res.data.user);
-
-      // 2) Apply token to axios for future calls
-      api.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
+      // 2) Persist token + user
+      const { token, user } = res.data;
+      sessionStorage.setItem('token', token);
+      sessionStorage.setItem('user', JSON.stringify(user));
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
       toast({
         title: 'Prijava uspešna!',
@@ -42,8 +50,24 @@ export default function Login() {
         isClosable: true,
       });
 
-      // 3) Redirect to your protected home/dashboard
-      nav('/home');
+      // 3) Fetch full role name
+      let roleName = '';
+      try {
+        const roleRes = await api.get(`/roles/${user.role_id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        roleName = roleRes.data.name;
+      } catch {
+        roleName = ''; // fallback
+      }
+
+      // 4) Redirect based on role
+      if (roleName === 'administrator') {
+        navigate('/admin-dashboard');
+      } else {
+        navigate('/home');
+      }
+
     } catch (err) {
       toast({
         title: 'Greška pri prijavi',
@@ -110,7 +134,7 @@ export default function Login() {
               <IconButton
                 variant="ghost"
                 icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() => setShowPassword(v => !v)}
                 aria-label="Toggle password visibility"
               />
             </InputRightElement>
