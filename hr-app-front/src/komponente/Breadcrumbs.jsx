@@ -18,6 +18,12 @@ const LABELS = {
 
 export default function Breadcrumbs() {
   const { pathname } = useLocation();
+  // pathname = '/leave-requests'
+  // split('/') = ['', 'leave-requests']
+  // Boolean --> true ili false
+  // falsy --> false, 0, '', null, undefined, NaN
+  // truthy --> sve ostale
+  // nakon filter --> ['leave-requests']
   const parts = pathname.split('/').filter(Boolean);
 
   // Determine home vs admin-dashboard
