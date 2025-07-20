@@ -1,5 +1,5 @@
 // src/components/LeaveRequestsEmployee.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   Box,
   Heading,
@@ -12,6 +12,8 @@ import {
   Stack,
   Avatar,
   useToast,
+  Select,
+  HStack,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -26,26 +28,25 @@ import {
 import api from '../../util/api';
 
 export default function LeaveRequestsEmployee() {
-  const [requests, setRequests]           = useState([]);
-  const [loading, setLoading]             = useState(true);
-  const [error, setError]                 = useState(null);
-  const [isNewOpen, setIsNewOpen]         = useState(false);
-  const [isEditOpen, setIsEditOpen]       = useState(false);
-  const [current, setCurrent]             = useState(null); // za izmenu
-  const [startDate, setStartDate]         = useState('');
-  const [endDate, setEndDate]             = useState('');
-  const [hrWorkerName, setHrWorkerName]   = useState('');
-  const toast                             = useToast();
+  const [requests, setRequests]         = useState([]);
+  const [loading, setLoading]           = useState(true);
+  const [error, setError]               = useState(null);
+  const [filterStatus, setFilterStatus] = useState('all');               // ← new
+  const [isNewOpen, setIsNewOpen]       = useState(false);
+  const [isEditOpen, setIsEditOpen]     = useState(false);
+  const [current, setCurrent]           = useState(null);
+  const [startDate, setStartDate]       = useState('');
+  const [endDate, setEndDate]           = useState('');
+  const [hrWorkerName, setHrWorkerName] = useState('');
+  const toast                           = useToast();
 
-  // Učitaj sve zahteve
+  // load leave requests
   useEffect(() => {
     (async () => {
       setLoading(true);
       try {
-        const res = await api.get('/leave-requests');
-        const list = Array.isArray(res.data)
-          ? res.data
-          : res.data.data || [];
+        const res  = await api.get('/leave-requests');
+        const list = Array.isArray(res.data) ? res.data : res.data.data || [];
         setRequests(list);
       } catch (err) {
         setError(err.response?.data?.message || err.message);
@@ -55,7 +56,13 @@ export default function LeaveRequestsEmployee() {
     })();
   }, []);
 
-  // Brisanje
+  // filtered list by status
+  const filtered = useMemo(() => {
+    if (filterStatus === 'all') return requests;
+    return requests.filter(r => r.status === filterStatus);
+  }, [requests, filterStatus]);
+
+  // delete handler
   const handleDelete = async id => {
     try {
       await api.delete(`/leave-requests/${id}`);
@@ -72,13 +79,13 @@ export default function LeaveRequestsEmployee() {
     }
   };
 
-  // Otvori modal za kreiranje
+  // open new request modal
   const openNew = () => {
     setStartDate(''); setEndDate(''); setHrWorkerName('');
     setIsNewOpen(true);
   };
 
-  // Kreiraj novi zahtev
+  // create new
   const handleNewSubmit = async () => {
     if (!startDate || !endDate) {
       toast({ title: 'Unesite oba datuma.', status: 'warning', duration: 2000, isClosable: true });
@@ -103,16 +110,16 @@ export default function LeaveRequestsEmployee() {
     }
   };
 
-  // Otvori modal za izmenu
+  // open edit modal
   const openEdit = req => {
     setCurrent(req);
     setStartDate(req.start_date);
     setEndDate(req.end_date);
-    setHrWorkerName(''); // hr_worker_name ne menjamo
+    setHrWorkerName('');
     setIsEditOpen(true);
   };
 
-  // Sačuvaj izmenu
+  // save edit
   const handleEditSubmit = async () => {
     if (!startDate || !endDate) {
       toast({ title: 'Unesite oba datuma.', status: 'warning', duration: 2000, isClosable: true });
@@ -155,33 +162,68 @@ export default function LeaveRequestsEmployee() {
     <Box p={8}>
       <Flex justify="space-between" align="center" mb={6}>
         <Heading size="xl">Leave Requests</Heading>
-        <Button colorScheme="pink" onClick={openNew}>New Leave Request</Button>
+        <HStack spacing={3}>
+          <Select
+            value={filterStatus}
+            onChange={e => setFilterStatus(e.target.value)}
+            w="160px"
+          >
+            <option value="all">All statuses</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </Select>
+          <Button colorScheme="pink" onClick={openNew}>
+            New Leave Request
+          </Button>
+        </HStack>
       </Flex>
 
       <SimpleGrid columns={[1, null, 2, 3]} spacing="24px">
-        {requests.length === 0 && (
-          <Box p={6} borderWidth="1px" borderRadius="2xl" boxShadow="lg" gridColumn="1 / -1">
+        {filtered.length === 0 && (
+          <Box
+            p={6}
+            borderWidth="1px"
+            borderRadius="2xl"
+            boxShadow="lg"
+            gridColumn="1 / -1"
+          >
             <Text fontSize="lg" fontWeight="bold" textAlign="center">
-              You have no leave requests yet. Click “New Leave Request” to create one.
+              You have no leave requests{' '}
+              {filterStatus !== 'all' && `with status "${filterStatus}"`}.
             </Text>
           </Box>
         )}
 
-        {requests.map(req => (
-          <Box key={req.id} p={6} borderWidth="1px" borderRadius="2xl" boxShadow="lg">
+        {filtered.map(req => (
+          <Box
+            key={req.id}
+            p={6}
+            borderWidth="1px"
+            borderRadius="2xl"
+            boxShadow="lg"
+          >
             <Stack spacing={4}>
               <Flex align="center">
-                <Avatar size="md" src={req.employee.image_url} name={req.employee.name} mr={4}/>
+                <Avatar
+                  size="md"
+                  src={req.employee.image_url}
+                  name={req.employee.name}
+                  mr={4}
+                />
                 <Text fontWeight="bold">{req.employee.name}</Text>
               </Flex>
               <Text>
-                {new Date(req.start_date).toLocaleDateString()} – {new Date(req.end_date).toLocaleDateString()}
+                {new Date(req.start_date).toLocaleDateString()} –{' '}
+                {new Date(req.end_date).toLocaleDateString()}
               </Text>
               <Badge
                 colorScheme={
-                  req.status === 'approved' ? 'green'
-                  : req.status === 'rejected' ? 'red'
-                  : 'yellow'
+                  req.status === 'approved'
+                    ? 'green'
+                    : req.status === 'rejected'
+                    ? 'red'
+                    : 'yellow'
                 }
                 alignSelf="flex-start"
               >
@@ -189,7 +231,12 @@ export default function LeaveRequestsEmployee() {
               </Badge>
               {req.hr_worker && (
                 <Flex align="center" mt={2}>
-                  <Avatar size="sm" src={req.hr_worker.image_url} name={req.hr_worker.name} mr={2}/>
+                  <Avatar
+                    size="sm"
+                    src={req.hr_worker.image_url}
+                    name={req.hr_worker.name}
+                    mr={2}
+                  />
                   <Text fontSize="sm">HR: {req.hr_worker.name}</Text>
                 </Flex>
               )}
@@ -199,7 +246,11 @@ export default function LeaveRequestsEmployee() {
                     Update
                   </Button>
                 )}
-                <Button size="sm" colorScheme="red" onClick={() => handleDelete(req.id)}>
+                <Button
+                  size="sm"
+                  colorScheme="red"
+                  onClick={() => handleDelete(req.id)}
+                >
                   Delete
                 </Button>
               </Flex>
@@ -208,52 +259,80 @@ export default function LeaveRequestsEmployee() {
         ))}
       </SimpleGrid>
 
-      {/* Modal: Novi zahtev */}
+      {/* New Request Modal */}
       <Modal isOpen={isNewOpen} onClose={() => setIsNewOpen(false)} isCentered>
-        <ModalOverlay bg="blackAlpha.600"/>
+        <ModalOverlay bg="blackAlpha.600" />
         <ModalContent>
           <ModalHeader>Create a new leave request</ModalHeader>
-          <ModalCloseButton/>
+          <ModalCloseButton />
           <ModalBody>
             <FormControl mb={3}>
               <FormLabel>Start Date</FormLabel>
-              <Input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
+              <Input
+                type="date"
+                value={startDate}
+                onChange={e => setStartDate(e.target.value)}
+              />
             </FormControl>
             <FormControl mb={3}>
               <FormLabel>End Date</FormLabel>
-              <Input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
+              <Input
+                type="date"
+                value={endDate}
+                onChange={e => setEndDate(e.target.value)}
+              />
             </FormControl>
             <FormControl>
               <FormLabel>HR Worker Name (optional)</FormLabel>
-              <Input placeholder="Exact HR user name" value={hrWorkerName} onChange={e => setHrWorkerName(e.target.value)} />
+              <Input
+                placeholder="Exact HR user name"
+                value={hrWorkerName}
+                onChange={e => setHrWorkerName(e.target.value)}
+              />
             </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={() => setIsNewOpen(false)} mr={3}>Cancel</Button>
-            <Button colorScheme="pink" onClick={handleNewSubmit}>Create</Button>
+            <Button onClick={() => setIsNewOpen(false)} mr={3}>
+              Cancel
+            </Button>
+            <Button colorScheme="pink" onClick={handleNewSubmit}>
+              Create
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
 
-      {/* Modal: Izmeni zahtev */}
+      {/* Edit Request Modal */}
       <Modal isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} isCentered>
-        <ModalOverlay bg="blackAlpha.600"/>
+        <ModalOverlay bg="blackAlpha.600" />
         <ModalContent>
-          <ModalHeader>Update a request #{current?.id}</ModalHeader>
-          <ModalCloseButton/>
+          <ModalHeader>Update request #{current?.id}</ModalHeader>
+          <ModalCloseButton />
           <ModalBody>
             <FormControl mb={3}>
               <FormLabel>Start Date</FormLabel>
-              <Input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
+              <Input
+                type="date"
+                value={startDate}
+                onChange={e => setStartDate(e.target.value)}
+              />
             </FormControl>
             <FormControl mb={3}>
               <FormLabel>End Date</FormLabel>
-              <Input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
+              <Input
+                type="date"
+                value={endDate}
+                onChange={e => setEndDate(e.target.value)}
+              />
             </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={() => setIsEditOpen(false)} mr={3}>Cancel</Button>
-            <Button colorScheme="pink" onClick={handleEditSubmit}>Save</Button>
+            <Button onClick={() => setIsEditOpen(false)} mr={3}>
+              Cancel
+            </Button>
+            <Button colorScheme="pink" onClick={handleEditSubmit}>
+              Save
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
