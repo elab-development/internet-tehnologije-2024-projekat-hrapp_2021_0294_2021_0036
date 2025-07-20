@@ -13,6 +13,7 @@ const LABELS = {
   'performance-reviews':   'Performance Reviews',
   'performance-reviews-hr':'Performance Reviews',
   'leave-requests-hr': 'Leave Requests',
+  'world-map': 'Our Locations',
   'view-users':            'Users',
   // etc...
 };
