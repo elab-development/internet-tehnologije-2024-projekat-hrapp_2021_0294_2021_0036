@@ -8,7 +8,9 @@ import ProtectedRoute     from './komponente/ProtectedRoute';
 import ProtectedLayout    from './komponente/ProtectedLayout';
 
 import PerformanceReviewsEmployee    from './komponente/employee/PerformanceReviewsEmployee';
+import LeaveRequestsEmployee from './komponente/employee/LeaveRequestsEmployee';
 import PerformanceReviewsHrWorker    from './komponente/hr_worker/PerformanceReviewsHrWorker';
+import LeaveRequestsHrWorker from './komponente/hr_worker/LeaveRequestsHrWorker';
 
 import AdminDashboard        from './komponente/administrator/AdminDashboard';
 import ViewUsers from './komponente/administrator/ViewUsers';
@@ -30,28 +32,14 @@ function App() {
         }
       >
         <Route path="/home"                   element={<Home />} />
-      <Route
-        path="/leave-requests"
-        element={
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: '100vh',
-              textAlign: 'center'
-            }}
-          >
-            <h1>ZA PROJEKAT POSLE!</h1>
-            <img
-              src="https://images.pexels.com/photos/211122/pexels-photo-211122.jpeg?auto=compress&cs=tinysrgb&w=600"
-              alt="Placeholder"
-              style={{ maxWidth: '80%', height: 'auto', marginTop: '1rem' }}
-            />
-          </div>
-        }
-      />
+        <Route
+          path="/leave-requests"
+          element={<LeaveRequestsEmployee />}
+        />
+        <Route
+        path="/leave-requests-hr"
+        element={<LeaveRequestsHrWorker />}
+        />
          <Route
           path="/performance-reviews"
           element={<PerformanceReviewsEmployee />}
