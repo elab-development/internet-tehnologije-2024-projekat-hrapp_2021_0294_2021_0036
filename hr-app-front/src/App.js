@@ -12,6 +12,8 @@ import LeaveRequestsEmployee from './komponente/employee/LeaveRequestsEmployee';
 import PerformanceReviewsHrWorker    from './komponente/hr_worker/PerformanceReviewsHrWorker';
 import LeaveRequestsHrWorker from './komponente/hr_worker/LeaveRequestsHrWorker';
 
+import WorldMap from './komponente/administrator/WorldMap';
+
 import AdminDashboard        from './komponente/administrator/AdminDashboard';
 import ViewUsers from './komponente/administrator/ViewUsers';
 
@@ -56,6 +58,10 @@ function App() {
         <Route
           path="/view-users"
           element={<ViewUsers />}
+        />
+        <Route
+          path="/world-map"
+          element={<WorldMap />}
         />
         {/* Redirect any unmatched protected path back to /home */}
         <Route path="*"                        element={<Navigate to="/home" replace />} />

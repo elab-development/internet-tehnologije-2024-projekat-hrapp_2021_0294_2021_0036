@@ -16,6 +16,7 @@ import {
   FiUsers,
   FiLogOut,
 } from 'react-icons/fi';
+import { FaGlobeAmericas } from "react-icons/fa";
 import { NavLink, useNavigate } from 'react-router-dom';
 import api from '../util/api';
 
@@ -46,6 +47,7 @@ export default function SideMenu() {
     links = [
       { label: 'Dashboard', icon: FiHome,    to: '/admin-dashboard' },
       { label: 'Users',     icon: FiUsers,   to: '/view-users'     },
+      { label: 'World Map',     icon: FaGlobeAmericas,   to: '/world-map'     },
     ];
   } else {
     const reviewsPath = roleName === 'hr_worker'
