@@ -51,10 +51,13 @@ export default function SideMenu() {
     const reviewsPath = roleName === 'hr_worker'
       ? '/performance-reviews-hr'
       : '/performance-reviews';
+    const leaveRequestsPath = roleName === 'hr_worker'
+      ? '/leave-requests-hr'
+      : '/leave-requests';
 
     links = [
       { label: 'Home',               icon: FiHome,      to: '/home'               },
-      { label: 'Leave Requests',     icon: FiCalendar,  to: '/leave-requests'     },
+      { label: 'Leave Requests',     icon: FiCalendar,  to: leaveRequestsPath     },
       { label: 'Performance Reviews',icon: FiBarChart2, to: reviewsPath          },
     ];
   }
