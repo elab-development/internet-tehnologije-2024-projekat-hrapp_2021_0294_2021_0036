@@ -123,29 +123,29 @@ HR App je interni sistem za upravljanje kadrovskim procesima unutar kompanije:
   - Krug-grafik i bar-grafik (“Personal Overview”)  
   - Welcome kartica sa profilnim podacima  
   - Carousel za rođendane ili novozaposlene
-    ![EmployeeHome](./images/Employee Home.png)
+    ![EmployeeHome](./images/Employee%20Home.png)
 
 - **Leave Requests (Employee)**  
   Kartični prikaz svih sopstvenih zahteva za odmor sa statusima (Pending / Approved / Rejected), dugmadima **Update** (za pending) i **Delete**, i modali za kreiranje i izmenu zahteva.
-    ![LeaveRequests](./images/Leave Requests.png)
+    ![LeaveRequests](./images/Leave%20Requests.png)
 
 - **Leave Requests for you (HR Worker)**  
   Kartični prikaz zahteva dodeljenih HR radniku, sa dugmadima **Approve** i **Reject** na pending zahtevima.
-    ![LeaveRequestsForYou](./images/Leave Requests for you.png)
+    ![LeaveRequestsForYou](./images/Leave%20Requests%20for%20you.png)
 
 - **All Users (Admin)**  
   Tabela svih korisnika (osim admina) sa kolonama: Avatar, ID, Name, Email, Role, Department, Actions.  
   Panel sa pretragom po imenu, filterom po roli, sortiranje po ID/alfabetu i paginacijom (5 po strani), dugme **Delete** za svaki red.
-    ![AllUsers](./images/All Users.png)
+    ![AllUsers](./images/All%20Users.png)
 
 - **My Performance Reviews (Employee)**  
   Tabelarni prikaz sopstvenih ocena (ID, Reviewer, Department, Score, Created At) sa dugmadima **View** i **PDF**.
-    ![MyPerformanceReviews](./images/My Performance Reviews.png)
+    ![MyPerformanceReviews](./images/My%20Performance%20Reviews.png)
 
 - **Performance Reviews (HR Worker)**  
   Tabela svih ocena sa dodatnim dugmetom **Edit** i modalom za kreiranje/izmenu, plus **PDF** export.
-    ![PerformanceReviews](./images/Performance Reviews.png)
+    ![PerformanceReviews](./images/Performance%20Reviews.png)
 
 - **Global Corporation Map**  
   Leaflet/OSM interaktivna mapa sa pink/gray slojem i tamnocrvenim granicama zemalja, 12 nasumičnih markera, pop-up “Corporation {City}” sa informacijama o gradu, državi i broju zaposlenih.
-    ![GlobalCorporationMap](./images/Global Corporation Map.png)
+    ![GlobalCorporationMap](./images/Global%20Corporation%20Map.png)
