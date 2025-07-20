@@ -12,6 +12,7 @@ const LABELS = {
   'leave-requests':        'Leave Requests',
   'performance-reviews':   'Performance Reviews',
   'performance-reviews-hr':'Performance Reviews',
+  'leave-requests-hr': 'Leave Requests',
   'view-users':            'Users',
   // etc...
 };
