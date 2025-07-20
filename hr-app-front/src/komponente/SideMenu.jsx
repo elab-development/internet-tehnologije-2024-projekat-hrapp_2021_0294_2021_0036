@@ -47,7 +47,7 @@ export default function SideMenu() {
     links = [
       { label: 'Dashboard', icon: FiHome,    to: '/admin-dashboard' },
       { label: 'Users',     icon: FiUsers,   to: '/view-users'     },
-      { label: 'World Map',     icon: FaGlobeAmericas,   to: '/world-map'     },
+      { label: 'Our Locations',     icon: FaGlobeAmericas,   to: '/world-map'     },
     ];
   } else {
     const reviewsPath = roleName === 'hr_worker'
